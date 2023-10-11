@@ -5,16 +5,16 @@ import java.util.Scanner;
 public class TelephoneDirectory {
 //    static HashMap<String, String> contracts = new HashMap<String, String>();
     public static void main(String[] args) {
-        String phone, name, value;
-        boolean isExists;
-        HashMap<String, String> contracts = new HashMap<String, String>();
+        String phone, name, value; // 인스턴스 변수
+        boolean isExists; // 인스턴스 변수
+        HashMap<String, String> contracts = new HashMap<String, String>(); // 참조 자료형
         System.out.println(" Telephone Directory Management!");
         while(true){
             System.out.println(" [ADD: 1, DELETE: 2, SEARCH: 3, DISPLAY_LIST: 4, EXIT: 0]");
             System.out.print(" Enter The Menu >>> ");
 
             Scanner scan = new Scanner(System.in);
-            int menu = scan.nextInt();
+            int menu = scan.nextInt(); // 지역 변수
             // 1. 번호 추가
             // 2. 번호 삭제
             // 3. 번호 조회
@@ -65,8 +65,6 @@ public class TelephoneDirectory {
                     }
                     break;
                 case 0:
-                    contracts.clear();
-                    System.out.println(" Cleared Contract!!");
                     System.out.println(" Exit Program... ");
                     return;
                 default:
