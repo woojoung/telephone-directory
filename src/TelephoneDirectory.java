@@ -1,71 +1,63 @@
-import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
-// 클래스 TelephoneDirectory
 public class TelephoneDirectory {
-//    static HashMap<String, String> contracts = new HashMap<String, String>();
     public static void main(String[] args) {
-        String phone, name, value; // 인스턴스 변수
-        boolean isExists; // 인스턴스 변수
-        HashMap<String, String> contracts = new HashMap<String, String>(); // 참조 자료형
+        ContactManager contactManager = new ContactManager("telephone_directory.txt");
+        Scanner scan = new Scanner(System.in);
+
         System.out.println(" Telephone Directory Management!");
         while(true){
             System.out.println(" [ADD: 1, DELETE: 2, SEARCH: 3, DISPLAY_LIST: 4, EXIT: 0]");
             System.out.print(" Enter The Menu >>> ");
-
-            Scanner scan = new Scanner(System.in);
-            int menu = scan.nextInt(); // 지역 변수
             // 1. 번호 추가
             // 2. 번호 삭제
             // 3. 번호 조회
             // 4. 목록 조회
             // 0. 종료
+            int menu = scan.nextInt(); // 지역 변수
+            scan.nextLine();
+
             switch (menu){
                 case 1:
                     System.out.print(" Enter The Phone Number >>> ");
-                    phone = scan.next();
-                    isExists = contracts.containsKey(phone);
-                    if (isExists) {
-                        System.out.println(" Mobile Number Already Exists!!");
-                        break;
-                    };
+                    String phone = scan.next();
                     System.out.print(" Enter The Name >>> ");
-                    name = scan.next();
-                    contracts.put(phone, name);
+                    String name = scan.next();
+                    Contact contact = new Contact(name, phone);
+                    contactManager.addContact(contact);
                     System.out.println(" Added Contract!!");
                     break;
                 case 2:
                     System.out.print(" Enter The Phone Number >>> ");
-                    phone = scan.next();
-                    value = contracts.get(phone);
-                    if (value == null) {
-                        System.out.println(" Not Found Contract!!");
-                        break;
-                    };
-                    contracts.remove(phone);
+                    String phoneNumber = scan.next();
+                    contactManager.removeContact(phoneNumber);
                     System.out.println(" Deleted Contract!!");
                     break;
                 case 3:
                     System.out.print(" Enter The Phone Number >>> ");
-                    phone = scan.next();
-                    value = contracts.get(phone);
-                    if (value == null) {
-                        System.out.println(" Not Found Contract!!");
+                    String phoneNum = scan.next();
+                    Contact findOne = contactManager.getOneContact(phoneNum);
+                    if (findOne == null) {
                         break;
-                    };
-                    System.out.println(value + "\t" + phone);
+                    }
+                    System.out.println("=====================================");
+                    System.out.println(" Name\tPhone ");
+                    System.out.println("=====================================");
+                    System.out.println(" " + findOne.getName() + "\t" + findOne.getPhone());
                     break;
                 case 4:
                     System.out.println("=====================================");
                     System.out.println(" Name\tPhone ");
                     System.out.println("=====================================");
-                    for (String key: contracts.keySet()) {
-                        value = contracts.get(key);
-                        System.out.println(value + "\t" + key);
+                    List<Contact> allContacts = contactManager.getAllContacts();
+                    for (Contact c : allContacts) {
+                        System.out.println(" " + c.getName() + "\t" + c.getPhone());
                     }
                     break;
                 case 0:
                     System.out.println(" Exit Program... ");
+                    System.exit(0);
                     return;
                 default:
                     System.out.println(" Invalid Menu! Please Try Again >>> ");
