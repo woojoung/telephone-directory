@@ -108,7 +108,7 @@ public class ContactManager {
         }
     }
 
-    public void exitManager() {
+    public void exit() {
         System.out.println(" Exit Program... ");
         System.exit(0);
     }

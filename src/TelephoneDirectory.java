@@ -25,7 +25,7 @@ public class TelephoneDirectory {
                     contactManager.getAllContacts();
                     break;
                 case 0:
-                    contactManager.exitManager();
+                    contactManager.exit();
                     return;
                 default:
                     System.out.println(" Invalid Menu! Please Try Again >>> ");
