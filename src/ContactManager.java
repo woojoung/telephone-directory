@@ -1,10 +1,12 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class ContactManager {
     private List<Contact> contacts = new ArrayList<>();
-    String fileName;
+    String fileName, phone, name;
+    Scanner scan = new Scanner(System.in);
 
     public ContactManager(String fileName){
         this.fileName = fileName;
@@ -17,63 +19,81 @@ public class ContactManager {
 
     }
 
-    public void addContact(Contact contact) {
-        Contact addOne = null;
-        for (Contact c : getAllContacts()) {
+    public void addContact() {
+        System.out.print(" Enter The Phone Number >>> ");
+        this.phone = scan.next();
+        System.out.print(" Enter The Name >>> ");
+        this.name = scan.next();
+        Contact contact = new Contact(name, phone);
+        boolean isExist = false;
+        for (Contact c : this.contacts) {
             if (c.getPhone().equals(contact.getPhone())) {
-                addOne = c;
+                isExist = true;
                 break;
             }
         }
-        if (addOne != null) {
+        if (isExist) {
             System.out.println(contact.getPhone() + " : Already Exists.");
         } else {
-            contacts.add(contact);
+            this.contacts.add(contact);
             saveContacts();
             System.out.println(" Added Contract!!");
         }
 
     }
 
-    public void removeContact(String phone) {
+    public void removeContact() {
+        System.out.print(" Enter The Phone Number >>> ");
+        this.phone = scan.next();
         Contact remove = null;
-        for (Contact c : getAllContacts()) {
-            if (c.getPhone().equals(phone)) {
+        for (Contact c : this.contacts) {
+            if (c.getPhone().equals(this.phone)) {
                 remove = c;
                 break;
             }
         }
         if (remove != null) {
-            contacts.remove(remove);
+            this.contacts.remove(remove);
             saveContacts();
             System.out.println(" Deleted Contract!!");
         } else {
-            System.out.println(phone + " : Not Found.");
+            System.out.println(this.phone + " : Not Found.");
         }
     }
 
-    public List<Contact> getAllContacts() {
-        return contacts;
+    public void getAllContacts() {
+        System.out.println("=====================================");
+        System.out.println(" Name\tPhone ");
+        System.out.println("=====================================");
+        for (Contact c : this.contacts) {
+            System.out.println(" " + c.getName() + "\t" + c.getPhone());
+        }
     }
 
-    public Contact getOneContact(String phone) {
-        Contact one = null;
-        for (Contact c : getAllContacts()) {
+    public void getOneContact() {
+        System.out.print(" Enter The Phone Number >>> ");
+        this.phone = scan.next();
+        Contact findOne = null;
+        for (Contact c : this.contacts) {
             if (c.getPhone().equals(phone)) {
-                one = c;
+                findOne = c;
                 break;
             }
         }
-        if (one == null) {
-            System.out.println(phone + " : Not Found.");
+        if (findOne == null) {
+            System.out.println(this.phone + " : Not Found.");
+        } else {
+            System.out.println("=====================================");
+            System.out.println(" Name\tPhone ");
+            System.out.println("=====================================");
+            System.out.println(" " + findOne.getName() + "\t" + findOne.getPhone());
         }
-        return one;
     }
 
     public void loadContacts(){
         try {
             ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(fileName)));
-            contacts = (List<Contact>) in.readObject();
+            this.contacts = (List<Contact>) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -82,9 +102,14 @@ public class ContactManager {
     public void saveContacts(){
         try {
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName));
-            out.writeObject(contacts);
+            out.writeObject(this.contacts);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void exitManager() {
+        System.out.println(" Exit Program... ");
+        System.exit(0);
     }
 }

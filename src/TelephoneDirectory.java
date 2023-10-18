@@ -1,61 +1,31 @@
-import java.util.List;
-import java.util.Scanner;
-
 public class TelephoneDirectory {
     public static void main(String[] args) {
         ContactManager contactManager = new ContactManager("telephone_directory.txt");
-        Scanner scan = new Scanner(System.in);
-        String phone, name;
+        MenuViewer menuViewer = new MenuViewer();
         System.out.println(" Telephone Directory Management!");
         while(true){
-            System.out.println(" [ADD: 1, DELETE: 2, SEARCH: 3, DISPLAY_LIST: 4, EXIT: 0]");
-            System.out.print(" Enter The Menu >>> ");
             // 1. 번호 추가
             // 2. 번호 삭제
             // 3. 번호 조회
             // 4. 목록 조회
             // 0. 종료
-            int menu = scan.nextInt(); // 지역 변수
-            scan.nextLine();
-
+            menuViewer.showMenu();
+            int menu = menuViewer.selectMenu();
             switch (menu){
                 case 1:
-                    System.out.print(" Enter The Phone Number >>> ");
-                    phone = scan.next();
-                    System.out.print(" Enter The Name >>> ");
-                    name = scan.next();
-                    Contact contact = new Contact(name, phone);
-                    contactManager.addContact(contact);
+                    contactManager.addContact();
                     break;
                 case 2:
-                    System.out.print(" Enter The Phone Number >>> ");
-                    phone = scan.next();
-                    contactManager.removeContact(phone);
+                    contactManager.removeContact();
                     break;
                 case 3:
-                    System.out.print(" Enter The Phone Number >>> ");
-                    phone = scan.next();
-                    Contact findOne = contactManager.getOneContact(phone);
-                    if (findOne == null) {
-                        break;
-                    }
-                    System.out.println("=====================================");
-                    System.out.println(" Name\tPhone ");
-                    System.out.println("=====================================");
-                    System.out.println(" " + findOne.getName() + "\t" + findOne.getPhone());
+                    contactManager.getOneContact();
                     break;
                 case 4:
-                    System.out.println("=====================================");
-                    System.out.println(" Name\tPhone ");
-                    System.out.println("=====================================");
-                    List<Contact> allContacts = contactManager.getAllContacts();
-                    for (Contact c : allContacts) {
-                        System.out.println(" " + c.getName() + "\t" + c.getPhone());
-                    }
+                    contactManager.getAllContacts();
                     break;
                 case 0:
-                    System.out.println(" Exit Program... ");
-                    System.exit(0);
+                    contactManager.exitManager();
                     return;
                 default:
                     System.out.println(" Invalid Menu! Please Try Again >>> ");
