@@ -5,7 +5,7 @@ public class TelephoneDirectory {
     public static void main(String[] args) {
         ContactManager contactManager = new ContactManager("telephone_directory.txt");
         Scanner scan = new Scanner(System.in);
-
+        String phone, name;
         System.out.println(" Telephone Directory Management!");
         while(true){
             System.out.println(" [ADD: 1, DELETE: 2, SEARCH: 3, DISPLAY_LIST: 4, EXIT: 0]");
@@ -21,23 +21,21 @@ public class TelephoneDirectory {
             switch (menu){
                 case 1:
                     System.out.print(" Enter The Phone Number >>> ");
-                    String phone = scan.next();
+                    phone = scan.next();
                     System.out.print(" Enter The Name >>> ");
-                    String name = scan.next();
+                    name = scan.next();
                     Contact contact = new Contact(name, phone);
                     contactManager.addContact(contact);
-                    System.out.println(" Added Contract!!");
                     break;
                 case 2:
                     System.out.print(" Enter The Phone Number >>> ");
-                    String phoneNumber = scan.next();
-                    contactManager.removeContact(phoneNumber);
-                    System.out.println(" Deleted Contract!!");
+                    phone = scan.next();
+                    contactManager.removeContact(phone);
                     break;
                 case 3:
                     System.out.print(" Enter The Phone Number >>> ");
-                    String phoneNum = scan.next();
-                    Contact findOne = contactManager.getOneContact(phoneNum);
+                    phone = scan.next();
+                    Contact findOne = contactManager.getOneContact(phone);
                     if (findOne == null) {
                         break;
                     }

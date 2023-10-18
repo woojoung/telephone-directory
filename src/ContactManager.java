@@ -30,6 +30,7 @@ public class ContactManager {
         } else {
             contacts.add(contact);
             saveContacts();
+            System.out.println(" Added Contract!!");
         }
 
     }
@@ -45,6 +46,7 @@ public class ContactManager {
         if (remove != null) {
             contacts.remove(remove);
             saveContacts();
+            System.out.println(" Deleted Contract!!");
         } else {
             System.out.println(phone + " : Not Found.");
         }
