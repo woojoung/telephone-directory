@@ -1,110 +1,112 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class ContactManager {
-    private List<Contact> contacts = new ArrayList<>();
-    String fileName, phone, name;
+
+    private Map<String, String> contacts = new HashMap<>();
+    private String phoneBookFileName = "phonebook.txt";
     Scanner scan = new Scanner(System.in);
 
-    public ContactManager(String fileName){
-        this.fileName = fileName;
-        File file = new File(fileName);
-        if(!file.exists()) {
-            saveContacts();
-        } else {
-            loadContacts();
-        }
-
+    public ContactManager(){
+        loadContacts();
     }
 
     public void addContact() {
-        System.out.print(" Enter The Phone Number >>> ");
-        this.phone = scan.next();
-        System.out.print(" Enter The Name >>> ");
-        this.name = scan.next();
-        Contact contact = new Contact(name, phone);
-        boolean isExist = false;
-        for (Contact c : this.contacts) {
-            if (c.getPhone().equals(contact.getPhone())) {
-                isExist = true;
-                break;
-            }
+        System.out.print(" Enter The File Name >>> ");
+        String fileName = scan.next();
+        File file = new File(fileName);
+        if(!file.exists()) {
+            System.out.println(fileName + " : Not Found.");
+            return;
         }
-        if (isExist) {
-            System.out.println(contact.getPhone() + " : Already Exists.");
-        } else {
-            this.contacts.add(contact);
-            saveContacts();
-            System.out.println(" Added Contract!!");
-        }
-
+        saveContacts(file);
     }
 
     public void removeContact() {
         System.out.print(" Enter The Phone Number >>> ");
-        this.phone = scan.next();
-        Contact remove = null;
-        for (Contact c : this.contacts) {
-            if (c.getPhone().equals(this.phone)) {
-                remove = c;
-                break;
-            }
-        }
-        if (remove != null) {
-            this.contacts.remove(remove);
-            saveContacts();
-            System.out.println(" Deleted Contract!!");
+        String phone = scan.next();
+        if (!this.contacts.containsKey(phone)) {
+            System.out.println(phone + " : Not Found.");
         } else {
-            System.out.println(this.phone + " : Not Found.");
+            this.contacts.remove(phone);
+            System.out.println(" Deleted Contract!!");
         }
+        // TODO. remove and save 로직 추가.
+        loadContacts();
+
     }
 
     public void getAllContacts() {
         System.out.println("=====================================");
         System.out.println(" Name\tPhone ");
         System.out.println("=====================================");
-        for (Contact c : this.contacts) {
-            System.out.println(" " + c.getName() + "\t" + c.getPhone());
+        for (Map.Entry<String, String> entry : this.contacts.entrySet()) {
+            System.out.println(" " + entry.getValue() + "\t" + entry.getKey());
         }
     }
 
     public void getOneContact() {
         System.out.print(" Enter The Phone Number >>> ");
-        this.phone = scan.next();
-        Contact findOne = null;
-        for (Contact c : this.contacts) {
-            if (c.getPhone().equals(phone)) {
-                findOne = c;
-                break;
-            }
-        }
-        if (findOne == null) {
-            System.out.println(this.phone + " : Not Found.");
+        String phone = scan.next();
+        if (!this.contacts.containsKey(phone)) {
+            System.out.println(phone + " : Not Found.");
         } else {
             System.out.println("=====================================");
             System.out.println(" Name\tPhone ");
             System.out.println("=====================================");
-            System.out.println(" " + findOne.getName() + "\t" + findOne.getPhone());
+            System.out.println(" " + this.contacts.get(phone) + "\t" + phone);
         }
     }
 
-    public void loadContacts(){
+    public void loadContacts() {
+        File file = new File(phoneBookFileName);
+        if(!file.exists()) {
+            return;
+        }
+        this.contacts.clear();
         try {
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(fileName)));
-            this.contacts = (List<Contact>) in.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+                String phoneNumber = parts[0].trim();
+                String name = parts[1].trim();
+                this.contacts.put(phoneNumber, name);
+            }
+            br.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public void saveContacts(){
-        try {
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName));
-            out.writeObject(this.contacts);
+    public void saveContacts(File file){
+        try (FileWriter writer = new FileWriter(phoneBookFileName)) {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            Map<String, String> newContacts = new HashMap<>();
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+                String phoneNumber = parts[0].trim();
+                String name = parts[1].trim();
+                if (!this.contacts.containsKey(phoneNumber)) {
+                    newContacts.put(phoneNumber, name);
+                }
+            }
+            if (!newContacts.isEmpty()) {
+                for (Map.Entry<String, String> entry : newContacts.entrySet()) {
+                    String key = entry.getKey();
+                    String value = entry.getValue();
+                    writer.write(key + "," + value + "\n");
+                }
+            }
+            writer.close();
+            br.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            loadContacts();
         }
     }
 

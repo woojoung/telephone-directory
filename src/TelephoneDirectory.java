@@ -1,14 +1,9 @@
 public class TelephoneDirectory {
     public static void main(String[] args) {
-        ContactManager contactManager = new ContactManager("telephone_directory.txt");
+        ContactManager contactManager = new ContactManager();
         MenuViewer menuViewer = new MenuViewer();
         System.out.println(" Telephone Directory Management!");
         while(true){
-            // 1. 번호 추가
-            // 2. 번호 삭제
-            // 3. 번호 조회
-            // 4. 목록 조회
-            // 0. 종료
             menuViewer.showMenu();
             int menu = menuViewer.selectMenu();
             switch (menu){
