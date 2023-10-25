@@ -21,7 +21,8 @@ public class ContactManager {
             System.out.println(fileName + " : Not Found.");
             return;
         }
-        saveContacts(file);
+        Map<String, String> newContacts = readFile(file);
+        insertContacts(newContacts);
     }
 
     public void removeContact() {
@@ -31,11 +32,9 @@ public class ContactManager {
             System.out.println(phone + " : Not Found.");
         } else {
             this.contacts.remove(phone);
-            System.out.println(" Deleted Contract!!");
+            System.out.println(" Deleted Contract : " + phone);
         }
-        // TODO. remove and save 로직 추가.
-        loadContacts();
-
+        updateContacts(this.contacts);
     }
 
     public void getAllContacts() {
@@ -81,11 +80,47 @@ public class ContactManager {
         }
     }
 
-    public void saveContacts(File file){
-        try (FileWriter writer = new FileWriter(phoneBookFileName)) {
+    public void insertContacts(Map<String, String> contacts){
+        try {
+            FileWriter writer = new FileWriter(phoneBookFileName, true);
+            if (contacts != null && !contacts.isEmpty()) {
+                for (Map.Entry<String, String> entry : contacts.entrySet()) {
+                    String key = entry.getKey();
+                    String value = entry.getValue();
+                    writer.write(key + "," + value + "\n");
+                    System.out.println(" Added Contract :" + "\t" + entry.getKey());
+                }
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            loadContacts();
+        }
+    }
+
+    public void updateContacts(Map<String, String> contacts){
+        try {
+            FileWriter writer = new FileWriter(phoneBookFileName, false);
+            for (Map.Entry<String, String> entry : contacts.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                writer.write(key + "," + value + "\n");
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            loadContacts();
+        }
+    }
+
+    public Map<String, String> readFile(File file) {
+        Map<String, String> newContacts = null;
+        try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
-            Map<String, String> newContacts = new HashMap<>();
+            newContacts = new HashMap<>();
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
                 String phoneNumber = parts[0].trim();
@@ -94,20 +129,11 @@ public class ContactManager {
                     newContacts.put(phoneNumber, name);
                 }
             }
-            if (!newContacts.isEmpty()) {
-                for (Map.Entry<String, String> entry : newContacts.entrySet()) {
-                    String key = entry.getKey();
-                    String value = entry.getValue();
-                    writer.write(key + "," + value + "\n");
-                }
-            }
-            writer.close();
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            loadContacts();
         }
+        return newContacts;
     }
 
     public void exit() {
