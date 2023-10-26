@@ -1,5 +1,8 @@
 public class TelephoneDirectory {
+    // Launcher 로 클래스명 변경
     public static void main(String[] args) {
+        // 파일을 읽어서, 파일에 있는 행위/데이터를 읽어서 controller 에 순차적으로 요청해주도록
+
         ContactManager contactManager = new ContactManager();
         MenuViewer menuViewer = new MenuViewer();
         System.out.println(" Telephone Directory Management!");
