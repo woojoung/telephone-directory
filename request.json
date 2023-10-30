@@ -1,0 +1,47 @@
+[
+  {
+    "method": "INSERT",
+    "body": {
+      "list": [
+        {
+          "name": "wooree",
+          "phone": "01012340000"
+        },
+        {
+          "name": "wooree",
+          "phone": "01012340001"
+        },
+        {
+          "name": "wooree",
+          "phone": "01012340002"
+        }
+      ]
+    }
+  },
+  {
+    "method": "DELETE",
+    "body": {
+      "list": [
+        {
+          "name": "wooree",
+          "phone": "01095850001"
+        },
+        {
+          "name": "wooree",
+          "phone": "01095851234"
+        }
+      ]
+    }
+  },
+  {
+    "method": "UPDATE",
+    "body": {
+      "list": [
+        {
+          "name": "wooreewooree",
+          "phone": "01095853229"
+        }
+      ]
+    }
+  }
+]
