@@ -1,7 +1,4 @@
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.List;
+import dto.Contact;
 
 /*
  * Service Layer
@@ -12,42 +9,40 @@ import java.util.List;
 public class ContactService {
     ContactRepository contactRepository = new ContactRepository();
 
-    public void addContact(JSONArray list) {
-        for (int i = 0; i < list.length(); i++) {
-            JSONObject jsonObject = list.getJSONObject(i);
-            String name = jsonObject.getString("name");
-            String phoneNumber = jsonObject.getString("phoneNumber");
-            Contact contact = new Contact(name, phoneNumber);
-            this.contactRepository.insert(contact);
+    public void insertContact(Contact contact) {
+        // findOne
+        String name = contact.getName();
+        String phoneNumber = contact.getPhoneNumber();
+        Contact findOneContact = this.contactRepository.findByPhoneNumber(phoneNumber);
+        if (findOneContact != null) {
+            return;
         }
+        this.contactRepository.insert(name, phoneNumber);
     }
 
-    public void updateContact(JSONArray list) {
-        for (int i = 0; i < list.length(); i++) {
-            JSONObject jsonObject = list.getJSONObject(i);
-            String name = jsonObject.getString("name");
-            String phoneNumber = jsonObject.getString("phoneNumber");
-            Contact contact = new Contact(name, phoneNumber);
-            this.contactRepository.update(contact);
+    public void updateContact(Contact contact) {
+        // findOne
+        String name = contact.getName();
+        String phoneNumber = contact.getPhoneNumber();
+        Contact findOneContact = this.contactRepository.findByPhoneNumber(phoneNumber);
+        if (findOneContact == null) {
+            return;
         }
+        this.contactRepository.update(name, phoneNumber);
     }
 
-    public void deleteContact(JSONArray list) {
-        for (int i = 0; i < list.length(); i++) {
-            JSONObject jsonObject = list.getJSONObject(i);
-            String name = jsonObject.getString("name");
-            String phoneNumber = jsonObject.getString("phoneNumber");
-            Contact contact = new Contact(name, phoneNumber);
-            this.contactRepository.delete(contact);
+    public void deleteContact(Contact contact) {
+        String name = contact.getName();
+        String phoneNumber = contact.getPhoneNumber();
+        Contact findOneContact = this.contactRepository.findByPhoneNumber(phoneNumber);
+        if (findOneContact == null) {
+            return;
         }
+        this.contactRepository.delete(name, phoneNumber);
     }
 
     public void findAllContact() {
-        List list = this.contactRepository.findAll();
-        // TODO. 수정하기
-        for (Object item : list) {
-            System.out.println(item);
-        }
+
     }
 
 }

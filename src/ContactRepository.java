@@ -1,3 +1,5 @@
+import dto.Contact;
+
 import java.io.*;
 import java.util.*;
 /*
@@ -7,94 +9,44 @@ import java.util.*;
  * */
 public class ContactRepository {
     private final String FILE_NAME = "phonebook.txt";
-    HashMap<String, String> contactMap = new HashMap<>();
-    //  private final Scanner scan = new Scanner(System.in);
-    // TODO. Scanner 도 동시성문제가 있진 않을까?
-
-    public void insert(Contact contact) {
+    Map<String, String> contactMap = new HashMap<>();
+    // Repository 클래스 생성자
+    public ContactRepository() {
+        // load file
         this.contactMap = readFile();
-        String name = contact.getName();
-        String phoneNumber = contact.getPhoneNumber();
-        // find
-        if (!this.contactMap.containsKey(phoneNumber)) {
-            // insert
-            this.contactMap.put(phoneNumber, name);
-            // save
-            saveFile(this.contactMap);
-        } else {
-            System.out.println("Already Exists : " + phoneNumber);
-        }
-
-
     }
 
-    public void delete(Contact contact) {
-        this.contactMap = readFile();
-        String phoneNumber = contact.getPhoneNumber();
-        // find
-        if (this.contactMap.containsKey(phoneNumber)) {
-            // remove
-            this.contactMap.remove(phoneNumber);
-            // save
-            saveFile(this.contactMap);
-        } else {
-            System.out.println("Not Found : " + phoneNumber);
-        }
+    public void insert(String name, String phoneNumber) {
+        // put
+        this.contactMap.put(phoneNumber, name);
+        // save
+        saveFile(this.contactMap);
     }
 
-    public void update(Contact contact) {
-        this.contactMap = readFile();
-        String phoneNumber = contact.getPhoneNumber();
-        String name = contact.getName();
-        // find
-        if (this.contactMap.containsKey(phoneNumber)) {
-            // remove
-            this.contactMap.replace(phoneNumber, name);
-            // save
-            saveFile(this.contactMap);
-        } else {
-            System.out.println("Not Found : " + phoneNumber);
-        }
+    public void delete(String name, String phoneNumber) {
+        // remove
+        this.contactMap.remove(phoneNumber, name);
+        // save
+        saveFile(this.contactMap);
     }
 
-    public Contact findByName(String name) {
-        this.contactMap = readFile();
-        for (Map.Entry<String, String> entry : this.contactMap.entrySet()) {
-            if (Objects.equals(entry.getValue(), name)) {
-                String phoneNumber = entry.getKey();
-                Contact contact = new Contact(name, phoneNumber);
-                return contact;
-            }
-        }
-        return null;
+    public void update(String name, String phoneNumber) {
+        // replace
+        this.contactMap.replace(phoneNumber, name);
+        // save
+        saveFile(this.contactMap);
     }
 
     public Contact findByPhoneNumber(String phoneNumber) {
-        this.contactMap = readFile();
-        for (Map.Entry<String, String> entry : this.contactMap.entrySet()) {
-            if (Objects.equals(entry.getKey(), phoneNumber)) {
-                String name = entry.getValue();
-                Contact contact = new Contact(name, phoneNumber);
-                return contact;
-            }
-        }
-        return null;
-    }
-
-    public List<Contact> findAll() {
-        this.contactMap = readFile();
-        ArrayList list = new ArrayList<>();
-        for (Map.Entry<String, String> entry : this.contactMap.entrySet()) {
-            String name = entry.getValue();
-            String phoneNumber = entry.getKey();
+        if (this.contactMap.containsKey(phoneNumber)){
+            String name = this.contactMap.get(phoneNumber);
             Contact contact = new Contact(name, phoneNumber);
-            list.add(contact);
-            return list;
+            return contact;
         }
         return null;
     }
 
-    public HashMap<String, String> readFile() {
+    public Map<String, String> readFile() {
         File file = new File(FILE_NAME);
         try {
             if(!file.exists()) {
@@ -103,7 +55,7 @@ public class ContactRepository {
             }
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
-            HashMap<String, String> newContacts = new HashMap<>();
+            Map<String, String> newContacts = new HashMap<>();
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
                 String phoneNumber = parts[0].trim();
@@ -115,7 +67,6 @@ public class ContactRepository {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void saveFile(Map<String, String> contacts){
