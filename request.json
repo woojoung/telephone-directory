@@ -1,53 +1,62 @@
 [
   {
     "method": "INSERT",
-    "body": {
-      "list": [
-        {
-          "name": "wooree",
-          "phoneNumber": "01012340000"
-        },
-        {
-          "name": "wooree",
-          "phoneNumber": "01012340001"
-        },
-        {
-          "name": "wooree",
-          "phoneNumber": "01012340002"
-        }
-      ]
-    }
+    "name": "wooree",
+    "phoneNumber": "01012340000"
+  },
+  {
+    "method": "INSERT",
+    "name": "wooree",
+    "phoneNumber": "01012340001"
+  },
+  {
+    "method": "INSERT",
+    "name": "wooree",
+    "phoneNumber": "01012340002"
+  },
+  {
+    "method": "INSERT",
+    "name": "wooree",
+    "phoneNumber": "01012340003"
   },
   {
     "method": "DELETE",
-    "body": {
-      "list": [
-        {
-          "name": "wooree",
-          "phoneNumber": "01012340001"
-        },
-        {
-          "name": "wooree",
-          "phoneNumber": "01095851234"
-        }
-      ]
-    }
+    "name": "wooree",
+    "phoneNumber": "01012340001"
+  },
+  {
+    "method": "DELETE",
+    "name": "wooree",
+    "phoneNumber": "01012340002"
+  },
+  {
+    "method": "DELETE",
+    "name": "wooree",
+    "phoneNumber": "01012340003"
+  },
+  {
+    "method": "INSERT",
+    "name": "wooree",
+    "phoneNumber": "01012340002"
+  },
+  {
+    "method": "INSERT",
+    "name": "wooree",
+    "phoneNumber": "01012340003"
+  },
+  {
+    "method": "INSERT",
+    "name": "wooree",
+    "phoneNumber": "01012340004"
+  },
+  {
+    "method": "INSERT",
+    "name": "wooree",
+    "phoneNumber": "01012340005"
   },
   {
     "method": "UPDATE",
-    "body": {
-      "list": [
-        {
-          "name": "wooreewooree",
-          "phoneNumber": "01095853229"
-        }
-      ]
-    }
-  },
-  {
-    "method": "SELECT",
-    "body": {
-
-    }
+    "name": "wooree",
+    "phoneNumber": "01012340110"
   }
 ]
