@@ -2,6 +2,7 @@ import dto.Contact;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import utils.CustomLogger;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -12,6 +13,7 @@ public class Launcher {
     * main key는 전화번호부 --> synchronized 블록을 통해 병렬 처리 실험.
     **/
     public static void main(String[] args) {
+        CustomLogger logger = CustomLogger.getInstance();
         try {
             // json 파일 읽기
             FileReader fileReader = new FileReader("request.json");
@@ -53,7 +55,7 @@ public class Launcher {
                 // System.out.println("========================================");
             }
         } catch (IOException e) {
-            throw new RuntimeException(e); // logger err/info/warn
+            logger.info(e.getMessage());
         }
     }
 
