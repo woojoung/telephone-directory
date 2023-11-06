@@ -1,4 +1,5 @@
 import dto.Contact;
+import utils.CustomLogger;
 
 import java.io.*;
 import java.util.*;
@@ -10,10 +11,12 @@ import java.util.*;
 public class ContactRepository {
     private final String FILE_NAME = "phonebook.txt";
     Map<String, String> contactMap = new HashMap<>();
+    CustomLogger logger;
     // Repository 클래스 생성자
     public ContactRepository() {
         // load file
         this.contactMap = readFile();
+        this.logger = CustomLogger.getInstance();
     }
 
     public void insert(String name, String phoneNumber) {
@@ -65,8 +68,9 @@ public class ContactRepository {
             br.close();
             return newContacts;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            this.logger.error(e.getMessage());
         }
+        return null;
     }
 
     public void saveFile(Map<String, String> contacts){
@@ -79,7 +83,7 @@ public class ContactRepository {
             }
             writer.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            this.logger.error(e.getMessage());
         }
     }
 }
