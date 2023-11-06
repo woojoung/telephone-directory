@@ -26,14 +26,14 @@ public class ContactRepository {
         saveFile(this.contactMap);
     }
 
-    public void delete(String name, String phoneNumber) {
+    public synchronized void delete(String name, String phoneNumber) {
         // remove
         this.contactMap.remove(phoneNumber, name);
         // save
         saveFile(this.contactMap);
     }
 
-    public void update(String name, String phoneNumber) {
+    public synchronized void update(String name, String phoneNumber) {
         // replace
         this.contactMap.replace(phoneNumber, name);
         // save
