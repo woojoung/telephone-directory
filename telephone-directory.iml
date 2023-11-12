@@ -10,5 +10,6 @@
     <orderEntry type="library" exported="" name="json" level="project" />
     <orderEntry type="library" exported="" name="apache.logging.log4j.api" level="project" />
     <orderEntry type="library" exported="" name="apache.logging.log4j.core" level="project" />
+    <orderEntry type="library" exported="" name="mysql.connector.java" level="project" />
   </component>
 </module>

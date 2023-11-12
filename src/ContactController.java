@@ -1,4 +1,5 @@
 import dto.Contact;
+import java.util.List;
 
 /*
  * Presentation Layer
@@ -20,6 +21,10 @@ public class ContactController {
     }
 
     public void findContact() {
-        contactService.findAllContact();
+        List<Contact> contactList = contactService.findAllContact();
+        for (Contact contact: contactList) {
+             System.out.println("Name: " + contact.getName());
+             System.out.println("PhoneNumber: " + contact.getPhoneNumber());
+        }
     }
 }

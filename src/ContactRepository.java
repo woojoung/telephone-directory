@@ -1,89 +1,124 @@
+import database.MySqlConnector;
 import dto.Contact;
 import utils.CustomLogger;
 
-import java.io.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 /*
  * Persistence Layer
  * DB나 File 같은 외부 I/O 작업을 처리
  * Service 로 전달
  * */
 public class ContactRepository {
-    private final String FILE_NAME = "phonebook.txt";
-    Map<String, String> contactMap = new HashMap<>();
     CustomLogger logger;
     // Repository 클래스 생성자
     public ContactRepository() {
-        // load file
-        this.contactMap = readFile();
         this.logger = CustomLogger.getInstance();
     }
 
     public void insert(String name, String phoneNumber) {
-        // put
-        this.contactMap.put(phoneNumber, name);
-        // save
-        saveFile(this.contactMap);
+        Connection conn = MySqlConnector.getMySQLConnection();
+        try {
+            String sql = "INSERT INTO Contacts(phoneNumber, name) VALUES(?, ?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, phoneNumber);
+            ps.setString(2, name);
+
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            this.logger.error(e.getMessage());
+        } finally {
+            MySqlConnector.close(conn);
+        }
     }
 
-    public synchronized void delete(String name, String phoneNumber) {
-        // remove
-        this.contactMap.remove(phoneNumber, name);
-        // save
-        saveFile(this.contactMap);
+    public void delete(String name, String phoneNumber) {
+        Connection conn = MySqlConnector.getMySQLConnection();
+        try {
+            String sql = "DELETE FROM Contacts WHERE phoneNumber = ? AND name = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, phoneNumber);
+            ps.setString(2, name);
+
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            this.logger.error(e.getMessage());
+        } finally {
+            MySqlConnector.close(conn);
+        }
     }
 
-    public synchronized void update(String name, String phoneNumber) {
-        // replace
-        this.contactMap.replace(phoneNumber, name);
-        // save
-        saveFile(this.contactMap);
+    public void update(String name, String phoneNumber) {
+        Connection conn = MySqlConnector.getMySQLConnection();
+        try {
+            String sql = "UPDATE Contacts SET phoneNumber = ?, name = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, phoneNumber);
+            ps.setString(2, name);
+
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            this.logger.error(e.getMessage());
+        } finally {
+            MySqlConnector.close(conn);
+        }
     }
 
     public Contact findByPhoneNumber(String phoneNumber) {
-        if (this.contactMap.containsKey(phoneNumber)){
-            String name = this.contactMap.get(phoneNumber);
-            Contact contact = new Contact(name, phoneNumber);
+        Connection conn = MySqlConnector.getMySQLConnection();
+        try {
+            String sql = "SELECT * FROM Contacts WHERE phoneNumber = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, phoneNumber);
+
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            Contact contact = new Contact(rs.getString("name"), rs.getString("phoneNumber"));
+
+            rs.close();
+            ps.close();
+
             return contact;
+        } catch (SQLException e) {
+            this.logger.error(e.getMessage());
+        } finally {
+            MySqlConnector.close(conn);
         }
         return null;
     }
 
-    public Map<String, String> readFile() {
-        File file = new File(FILE_NAME);
+    public List<Contact> findAll() {
+        Connection conn = MySqlConnector.getMySQLConnection();
         try {
-            if(!file.exists()) {
-                FileWriter writer = new FileWriter(file);
-                writer.close();
+            String sql = "SELECT * FROM Contacts";
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ResultSet rs = ps.executeQuery();
+            List<Contact> contactList = new ArrayList<>();
+
+            while (rs.next()){
+                Contact contact = new Contact(rs.getString("name"), rs.getString("phoneNumber"));
+                contactList.add(contact);
             }
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            Map<String, String> newContacts = new HashMap<>();
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(",");
-                String phoneNumber = parts[0].trim();
-                String name = parts[1].trim();
-                newContacts.put(phoneNumber, name);
-            }
-            br.close();
-            return newContacts;
-        } catch (IOException e) {
+
+            rs.close();
+            ps.close();
+
+            return contactList;
+        } catch (SQLException e) {
             this.logger.error(e.getMessage());
+        } finally {
+            MySqlConnector.close(conn);
         }
         return null;
     }
 
-    public void saveFile(Map<String, String> contacts){
-        try {
-            FileWriter writer = new FileWriter(FILE_NAME, false);
-            for (Map.Entry<String, String> entry : contacts.entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue();
-                writer.write(key + "," + value + "\n");
-            }
-            writer.close();
-        } catch (IOException e) {
-            this.logger.error(e.getMessage());
-        }
-    }
 }
