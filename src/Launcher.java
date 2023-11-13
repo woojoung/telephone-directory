@@ -1,3 +1,4 @@
+import database.MySqlConnection;
 import dto.Contact;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -6,6 +7,9 @@ import utils.CustomLogger;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Launcher {
     /* TODO. 병렬 처리를 위해 개선을 한다고 가정
@@ -15,6 +19,25 @@ public class Launcher {
     public static void main(String[] args) {
         CustomLogger logger = CustomLogger.getInstance();
         try {
+            // MySQL 연결
+            // TODO. sql 파일로 처리.
+            Connection conn = MySqlConnection.getMySQLConnection();
+            Statement st = conn.createStatement();
+            String createDatabase = "CREATE DATABASE IF NOT EXISTS `database1` DEFAULT CHARACTER SET utf8mb4";
+            st.executeUpdate(createDatabase);
+            String createTable = "CREATE TABLE IF NOT EXISTS `Contacts` (" +
+                    "`contactId` BIGINT(20) NOT NULL AUTO_INCREMENT, " +
+                    "`deleteTime` BIGINT(20) NOT NULL DEFAULT 0, " +
+                    "`phoneNumber` VARCHAR(20) NOT NULL DEFAULT '', " +
+                    "`name` VARCHAR(45) NOT NULL DEFAULT '', " +
+                    "`insertTime` DATETIME NOT NULL DEFAULT '1970-01-01 00:00:00', " +
+                    "`updateTime` DATETIME NOT NULL DEFAULT '1970-01-01 00:00:00', " +
+                    "PRIMARY KEY (`contactId`)" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+            st.executeUpdate(createTable);
+            st.close();
+            conn.close();
+
             // json 파일 읽기
             FileReader fileReader = new FileReader("request.json");
             JSONTokener tokener = new JSONTokener(fileReader);
@@ -54,7 +77,7 @@ public class Launcher {
                 }
                 // System.out.println("========================================");
             }
-        } catch (IOException e) {
+        } catch (IOException | SQLException e) {
             logger.info(e.getMessage());
         }
     }

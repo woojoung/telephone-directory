@@ -1,11 +1,8 @@
-import database.MySqlConnector;
+import database.MySqlConnection;
 import dto.Contact;
 import utils.CustomLogger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,24 +19,23 @@ public class ContactRepository {
     }
 
     public void insert(String name, String phoneNumber) {
-        Connection conn = MySqlConnector.getMySQLConnection();
+        Connection conn = MySqlConnection.getMySQLConnection();
         try {
-            String sql = "INSERT INTO Contacts(phoneNumber, name) VALUES(?, ?)";
+            String sql = "INSERT INTO Contacts(phoneNumber, name, insertTime, updateTime) VALUES(?, ?, NOW(), NOW())";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, phoneNumber);
             ps.setString(2, name);
 
             ps.executeUpdate();
             ps.close();
+            conn.close();
         } catch (SQLException e) {
             this.logger.error(e.getMessage());
-        } finally {
-            MySqlConnector.close(conn);
         }
     }
 
     public void delete(String name, String phoneNumber) {
-        Connection conn = MySqlConnector.getMySQLConnection();
+        Connection conn = MySqlConnection.getMySQLConnection();
         try {
             String sql = "DELETE FROM Contacts WHERE phoneNumber = ? AND name = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -48,34 +44,32 @@ public class ContactRepository {
 
             ps.executeUpdate();
             ps.close();
+            conn.close();
         } catch (SQLException e) {
             this.logger.error(e.getMessage());
-        } finally {
-            MySqlConnector.close(conn);
         }
     }
 
     public void update(String name, String phoneNumber) {
-        Connection conn = MySqlConnector.getMySQLConnection();
+        Connection conn = MySqlConnection.getMySQLConnection();
         try {
-            String sql = "UPDATE Contacts SET phoneNumber = ?, name = ?";
+            String sql = "UPDATE Contacts SET phoneNumber = ?, name = ?, updateTime = NOW()";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, phoneNumber);
             ps.setString(2, name);
 
             ps.executeUpdate();
             ps.close();
+            conn.close();
         } catch (SQLException e) {
             this.logger.error(e.getMessage());
-        } finally {
-            MySqlConnector.close(conn);
         }
     }
 
     public Contact findByPhoneNumber(String phoneNumber) {
-        Connection conn = MySqlConnector.getMySQLConnection();
+        Connection conn = MySqlConnection.getMySQLConnection();
         try {
-            String sql = "SELECT * FROM Contacts WHERE phoneNumber = ?";
+            String sql = "SELECT * FROM Contacts WHERE deleteTime = 0 AND phoneNumber = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, phoneNumber);
 
@@ -85,23 +79,22 @@ public class ContactRepository {
 
             rs.close();
             ps.close();
+            conn.close();
 
             return contact;
         } catch (SQLException e) {
             this.logger.error(e.getMessage());
-        } finally {
-            MySqlConnector.close(conn);
         }
         return null;
     }
 
     public List<Contact> findAll() {
-        Connection conn = MySqlConnector.getMySQLConnection();
+        Connection conn = MySqlConnection.getMySQLConnection();
         try {
-            String sql = "SELECT * FROM Contacts";
-            PreparedStatement ps = conn.prepareStatement(sql);
+            String sql = "SELECT * FROM Contacts WHERE deleteTime = 0";
+            Statement st = conn.createStatement();
 
-            ResultSet rs = ps.executeQuery();
+            ResultSet rs = st.executeQuery(sql);
             List<Contact> contactList = new ArrayList<>();
 
             while (rs.next()){
@@ -110,13 +103,12 @@ public class ContactRepository {
             }
 
             rs.close();
-            ps.close();
+            st.close();
+            conn.close();
 
             return contactList;
         } catch (SQLException e) {
             this.logger.error(e.getMessage());
-        } finally {
-            MySqlConnector.close(conn);
         }
         return null;
     }
