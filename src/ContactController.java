@@ -1,4 +1,6 @@
 import dto.Contact;
+import utils.CustomLogger;
+
 import java.util.List;
 
 /*
@@ -7,6 +9,7 @@ import java.util.List;
  * */
 public class ContactController {
     private final ContactService contactService = new ContactService();
+    CustomLogger logger = CustomLogger.getInstance();
 
     public void insertContact(Contact contact) {
         contactService.insertContact(contact);
@@ -23,8 +26,8 @@ public class ContactController {
     public void findContact() {
         List<Contact> contactList = contactService.findAllContact();
         for (Contact contact: contactList) {
-             System.out.println("Name: " + contact.getName());
-             System.out.println("PhoneNumber: " + contact.getPhoneNumber());
+            this.logger.debug("Name: " + contact.getName());
+            this.logger.debug("PhoneNumber: " + contact.getPhoneNumber());
         }
     }
 }
