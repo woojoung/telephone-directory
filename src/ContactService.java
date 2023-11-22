@@ -1,5 +1,7 @@
 import dto.Contact;
 
+import java.util.List;
+
 /*
  * Service Layer
  * Business Logic리 처리
@@ -41,8 +43,8 @@ public class ContactService {
         this.contactRepository.delete(name, phoneNumber);
     }
 
-    public void findAllContact() {
-
+    public List<Contact> findAllContact() {
+        return this.contactRepository.findAll();
     }
 
 }
