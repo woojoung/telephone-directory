@@ -1,62 +1,7 @@
-[
-  {
-    "method": "INSERT",
-    "name": "wooree",
-    "phoneNumber": "01012340000"
-  },
-  {
-    "method": "INSERT",
-    "name": "wooree",
-    "phoneNumber": "01012340001"
-  },
-  {
-    "method": "INSERT",
-    "name": "wooree",
-    "phoneNumber": "01012340002"
-  },
-  {
-    "method": "INSERT",
-    "name": "wooree",
-    "phoneNumber": "01012340003"
-  },
-  {
-    "method": "DELETE",
-    "name": "wooree",
-    "phoneNumber": "01012340001"
-  },
-  {
-    "method": "DELETE",
-    "name": "wooree",
-    "phoneNumber": "01012340002"
-  },
-  {
-    "method": "DELETE",
-    "name": "wooree",
-    "phoneNumber": "01012340003"
-  },
-  {
-    "method": "INSERT",
-    "name": "wooree",
-    "phoneNumber": "01012340002"
-  },
-  {
-    "method": "INSERT",
-    "name": "wooree",
-    "phoneNumber": "01012340003"
-  },
-  {
-    "method": "INSERT",
-    "name": "wooree",
-    "phoneNumber": "01012340004"
-  },
-  {
-    "method": "INSERT",
-    "name": "wooree",
-    "phoneNumber": "01012340005"
-  },
-  {
-    "method": "UPDATE",
-    "name": "wooree",
-    "phoneNumber": "01012340110"
+{
+  "method": "ADD",
+  "body": {
+    "param1": "value1",
+    "param2": "value2"
   }
-]
+}

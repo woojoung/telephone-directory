@@ -1,4 +1,5 @@
 import database.MySqlConnection;
+import database.MySqlConnectionPool;
 import dto.Contact;
 import utils.CustomLogger;
 
@@ -13,13 +14,20 @@ import java.util.List;
  * */
 public class ContactRepository {
     CustomLogger logger;
+    MySqlConnectionPool mySqlConnectionPool;
+
     // Repository 클래스 생성자
     public ContactRepository() {
         this.logger = CustomLogger.getInstance();
+        try {
+            this.mySqlConnectionPool = MySqlConnectionPool.getInstance();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void insert(String name, String phoneNumber) {
-        Connection conn = MySqlConnection.getMySQLConnection();
+        Connection conn = mySqlConnectionPool.getConnection();
         try {
             String sql = "INSERT INTO Contacts(phoneNumber, name, insertTime, updateTime) VALUES(?, ?, NOW(), NOW())";
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -28,14 +36,14 @@ public class ContactRepository {
 
             ps.executeUpdate();
             ps.close();
-            conn.close();
+            mySqlConnectionPool.returnConnection(conn);
         } catch (SQLException e) {
             this.logger.error(e.getMessage());
         }
     }
 
     public void delete(String name, String phoneNumber) {
-        Connection conn = MySqlConnection.getMySQLConnection();
+        Connection conn = mySqlConnectionPool.getConnection();
         try {
             String sql = "DELETE FROM Contacts WHERE phoneNumber = ? AND name = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -44,14 +52,14 @@ public class ContactRepository {
 
             ps.executeUpdate();
             ps.close();
-            conn.close();
+            mySqlConnectionPool.returnConnection(conn);
         } catch (SQLException e) {
             this.logger.error(e.getMessage());
         }
     }
 
     public void update(String name, String phoneNumber) {
-        Connection conn = MySqlConnection.getMySQLConnection();
+        Connection conn = mySqlConnectionPool.getConnection();
         try {
             String sql = "UPDATE Contacts SET phoneNumber = ?, name = ?, updateTime = NOW()";
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -60,14 +68,14 @@ public class ContactRepository {
 
             ps.executeUpdate();
             ps.close();
-            conn.close();
+            mySqlConnectionPool.returnConnection(conn);
         } catch (SQLException e) {
             this.logger.error(e.getMessage());
         }
     }
 
     public Contact findByPhoneNumber(String phoneNumber) {
-        Connection conn = MySqlConnection.getMySQLConnection();
+        Connection conn = mySqlConnectionPool.getConnection();
         try {
             String sql = "SELECT * FROM Contacts WHERE deleteTime = 0 AND phoneNumber = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -79,7 +87,7 @@ public class ContactRepository {
 
             rs.close();
             ps.close();
-            conn.close();
+            mySqlConnectionPool.returnConnection(conn);
 
             return contact;
         } catch (SQLException e) {
@@ -89,7 +97,7 @@ public class ContactRepository {
     }
 
     public List<Contact> findAll() {
-        Connection conn = MySqlConnection.getMySQLConnection();
+        Connection conn = mySqlConnectionPool.getConnection();
         try {
             String sql = "SELECT * FROM Contacts WHERE deleteTime = 0";
             Statement st = conn.createStatement();
@@ -104,7 +112,7 @@ public class ContactRepository {
 
             rs.close();
             st.close();
-            conn.close();
+            mySqlConnectionPool.returnConnection(conn);
 
             return contactList;
         } catch (SQLException e) {
