@@ -56,9 +56,6 @@ public class Launcher {
                 Contact contact = new Contact(name, phoneNumber);
 
                 // call controller
-                // System.out.println("Method: " + method);
-                // System.out.println("Name: " + name);
-                // System.out.println("PhoneNumber: " + phoneNumber);
                 switch (method) {
                     case "SELECT":
                         controller.findContact();
@@ -75,7 +72,6 @@ public class Launcher {
                     default:
                         System.out.println("Invalid method: " + method);
                 }
-                // System.out.println("========================================");
             }
         } catch (IOException | SQLException e) {
             logger.info(e.getMessage());
